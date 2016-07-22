@@ -1,0 +1,2 @@
+# MCSlack
+Minecraft/Slack Integration
