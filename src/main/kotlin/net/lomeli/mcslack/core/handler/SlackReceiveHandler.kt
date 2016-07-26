@@ -22,14 +22,13 @@ class SlackReceiveHandler : AbstractHandler {
                 if (Strings.isNullOrEmpty(text))
                     return
                 var user = request1?.getParameter("user_name")
-                if (Strings.isNullOrEmpty(user))
+                if (Strings.isNullOrEmpty(user) || user.equals("slackbot"))
                     return
-                val msg = TextComponentString("#${user}: ${text}")
+                val msg = TextComponentString("@${user}: ${text}")
                 if (FMLCommonHandler.instance().side.isClient)
                     FMLClientHandler.instance().clientPlayerEntity.addChatComponentMessage(msg)
-                else if (FMLCommonHandler.instance().minecraftServerInstance != null) {
+                else if (FMLCommonHandler.instance().minecraftServerInstance != null)
                     FMLCommonHandler.instance().minecraftServerInstance.playerList.sendChatMsgImpl(msg, false)
-                }
             }
         }
     }
