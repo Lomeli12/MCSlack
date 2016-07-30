@@ -48,6 +48,10 @@ dependencies {
     compile "org.eclipse.jetty:jetty-http:$jettyVersion"
     compile "org.eclipse.jetty:jetty-io:$jettyVersion"
     compile "javax.servlet:javax.servlet-api:$servletVersion"
+    compile "org.apache.httpcomponents:httpclient:$httpClientVersion"
+    compile "commons-logging:commons-logging:$loggingVersion"
+    //compile "org.apache.logging.log4j:log4j-api:$log4jVersion"
+    //compile "org.apache.logging.log4j:log4j-core:$log4jVersion"
 }
 
 group = "$modGroup"
@@ -99,6 +103,8 @@ shadowJar {
     relocate 'org.jetbrains.annotations', 'net.lomeli.mcslack.repack.org.jetbrains.annotations'
     relocate 'org.eclipse.jetty', 'net.lomeli.mcslack.repack.org.eclipse.jetty'
     relocate 'javax.servlet', 'net.lomeli.mcslack.repack.javax.servlet'
+    relocate 'org.apache.http', 'net.lomeli.mcslack.repack.org.apache.http'
+    relocate 'org.apache.commons', 'net.lomeli.mcslack.repack.org.apache.commons'
 }
 
 reobf {

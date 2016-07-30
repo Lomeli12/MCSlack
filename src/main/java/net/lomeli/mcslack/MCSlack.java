@@ -13,9 +13,10 @@ import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.lomeli.mcslack.core.Config;
 import net.lomeli.mcslack.core.Logger;
 import net.lomeli.mcslack.core.handler.ChatEvent;
+import net.lomeli.mcslack.core.handler.SlackPostHelper;
 import net.lomeli.mcslack.core.handler.SlackReceiveHandler;
 
-@Mod(modid = MCSlack.MOD_ID, name = MCSlack.NAME, version = MCSlack.VERSION, modLanguageAdapter = MCSlack.KOTLIN_ADAPTER)
+@Mod(modid = MCSlack.MOD_ID, name = MCSlack.NAME, version = MCSlack.VERSION, modLanguageAdapter = MCSlack.KOTLIN_ADAPTER, acceptableRemoteVersions = "*")
 public class MCSlack {
     public static final String NAME = "MCSlack";
     public static final String MOD_ID = "mcslack";
@@ -46,6 +47,7 @@ public class MCSlack {
             server = new Server(modConfig.getPort());
             server.setHandler(new SlackReceiveHandler());
             server.start();
+            SlackPostHelper.INSTANCE.sendBotMessage("MCSlack Starting");
             logger.logInfo("Now listening on port " + modConfig.getPort());
         } catch (Exception e) {
             logger.logInfo("Could not open slack server on port " + modConfig.getPort() + "!");
@@ -57,6 +59,7 @@ public class MCSlack {
     public void serverStopped(FMLServerStoppedEvent event) {
         try {
             server.stop();
+            SlackPostHelper.INSTANCE.sendBotMessage("MCSlack stopping");
             logger.logInfo("Stopped listening on port ");
         } catch (Exception e) {
             logger.logError("Could not stop server!");

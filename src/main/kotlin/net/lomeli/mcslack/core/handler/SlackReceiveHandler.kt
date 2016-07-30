@@ -6,6 +6,7 @@ import net.minecraft.util.text.TextComponentString
 import net.minecraftforge.fml.client.FMLClientHandler
 import net.minecraftforge.fml.common.FMLCommonHandler
 import org.eclipse.jetty.server.Request
+import org.eclipse.jetty.server.Response
 import org.eclipse.jetty.server.handler.AbstractHandler
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -22,13 +23,14 @@ class SlackReceiveHandler : AbstractHandler {
                 if (Strings.isNullOrEmpty(text))
                     return
                 var user = request1?.getParameter("user_name")
-                if (Strings.isNullOrEmpty(user) || user.equals("slackbot"))
+                if (Strings.isNullOrEmpty(user) || user.equals("slackbot", true) || user.equals("mcslack", true))
                     return
                 val msg = TextComponentString("@${user}: ${text}")
                 if (FMLCommonHandler.instance().side.isClient)
                     FMLClientHandler.instance().clientPlayerEntity.addChatComponentMessage(msg)
                 else if (FMLCommonHandler.instance().minecraftServerInstance != null)
                     FMLCommonHandler.instance().minecraftServerInstance.playerList.sendChatMsgImpl(msg, false)
+                response?.status = Response.SC_OK
             }
         }
     }

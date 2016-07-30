@@ -11,11 +11,15 @@ import java.net.URLEncoder
 object SlackPostHelper {
     private var gson: Gson = Gson()
 
-    fun sentSlackMessage(player: EntityPlayer, message: String) {
+    fun sendSlackMessage(player: EntityPlayer, message: String) {
+        sendSlackMessage(player.displayNameString, "https://mcapi.ca/avatar/2d/${player.displayNameString}/100/false", message)
+    }
+
+    fun sendSlackMessage(name: String, icon: String, message: String) {
         val httpClient = HttpClientBuilder.create().build()
         try {
             val request = HttpPost(MCSlack.modConfig.incomingHook)
-            val msg = SlackMessage(player.displayNameString, message, "https://mcapi.ca/avatar/2d/${player.displayNameString}/100/false")
+            val msg = SlackMessage(name, message, icon)
             val json = URLEncoder.encode(gson.toJson(msg), "UTF-8")
             val param = StringEntity("payload=${json}")
             request.addHeader("content-type", "application/x-www-form-urlencoded")
@@ -27,5 +31,9 @@ object SlackPostHelper {
         } finally {
             httpClient.close()
         }
+    }
+
+    fun sendBotMessage(message: String) {
+        sendSlackMessage("MCSlack", "https://files.lomeli12.net/minecraft/mcslack/mcslack.png", message);
     }
 }
