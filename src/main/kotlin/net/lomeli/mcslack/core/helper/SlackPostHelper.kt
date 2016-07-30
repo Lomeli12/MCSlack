@@ -1,7 +1,8 @@
-package net.lomeli.mcslack.core.handler
+package net.lomeli.mcslack.core.helper
 
 import com.google.gson.Gson
 import net.lomeli.mcslack.MCSlack
+import net.lomeli.mcslack.core.handler.SlackMessage
 import net.minecraft.entity.player.EntityPlayer
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.StringEntity
@@ -10,10 +11,6 @@ import java.net.URLEncoder
 
 object SlackPostHelper {
     private var gson: Gson = Gson()
-
-    fun sendSlackMessage(player: EntityPlayer, message: String) {
-        sendSlackMessage(player.displayNameString, "https://mcapi.ca/avatar/2d/${player.displayNameString}/100/false", message)
-    }
 
     fun sendSlackMessage(name: String, icon: String, message: String) {
         val httpClient = HttpClientBuilder.create().build()
@@ -26,14 +23,18 @@ object SlackPostHelper {
             request.entity = param
             val response = httpClient.execute(request)
         } catch (ex: Exception) {
-            MCSlack.logger.logError("Something happened while sending message!");
+            MCSlack.logger.logError("Something happened while sending message!")
             ex.printStackTrace()
         } finally {
             httpClient.close()
         }
     }
 
+    fun sendSlackMessage(player: EntityPlayer, message: String) {
+        sendSlackMessage(player.displayNameString, "https://mcapi.ca/avatar/2d/${player.displayNameString}/100/false", message)
+    }
+
     fun sendBotMessage(message: String) {
-        sendSlackMessage("MCSlack", "https://files.lomeli12.net/minecraft/mcslack/mcslack.png", message);
+        sendSlackMessage(MCSlack.modConfig!!.botName, MCSlack.modConfig!!.botIcon, message)
     }
 }

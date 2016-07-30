@@ -1,5 +1,6 @@
 package net.lomeli.mcslack.core.handler
 
+import net.lomeli.mcslack.core.helper.SlackPostHelper
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraftforge.event.ServerChatEvent
 import net.minecraftforge.event.entity.living.LivingDeathEvent
@@ -7,7 +8,7 @@ import net.minecraftforge.event.entity.player.AchievementEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.PlayerEvent
 
-class ChatEvent {
+class EventHandler {
     @SubscribeEvent fun serverChat(event: ServerChatEvent) {
         SlackPostHelper.sendSlackMessage(event.player, event.message)
     }

@@ -23,7 +23,7 @@ class SlackReceiveHandler : AbstractHandler {
                 if (Strings.isNullOrEmpty(text))
                     return
                 var user = request1?.getParameter("user_name")
-                if (Strings.isNullOrEmpty(user) || user.equals("slackbot", true) || user.equals("mcslack", true))
+                if (Strings.isNullOrEmpty(user) || user.equals("slackbot", true) || user.equals(MCSlack.modConfig!!.botName, true))
                     return
                 val msg = TextComponentString("@${user}: ${text}")
                 if (FMLCommonHandler.instance().side.isClient)
