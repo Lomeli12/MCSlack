@@ -18,7 +18,7 @@ class SlackReceiveHandler : AbstractHandler {
     override fun handle(target: String?, request0: Request?, request1: HttpServletRequest?, response: HttpServletResponse?) {
         if (request1?.method.equals("POST")) {
             val token = request1?.getParameter("token")
-            if (!Strings.isNullOrEmpty(MCSlack.modConfig.outgoingToken) && MCSlack.modConfig.outgoingToken.equals(token)) {
+            if (!Strings.isNullOrEmpty(MCSlack.modConfig!!.outgoingToken) && MCSlack.modConfig!!.outgoingToken.equals(token)) {
                 val text = request1?.getParameter("text");
                 if (Strings.isNullOrEmpty(text))
                     return

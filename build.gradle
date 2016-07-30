@@ -50,8 +50,6 @@ dependencies {
     compile "javax.servlet:javax.servlet-api:$servletVersion"
     compile "org.apache.httpcomponents:httpclient:$httpClientVersion"
     compile "commons-logging:commons-logging:$loggingVersion"
-    //compile "org.apache.logging.log4j:log4j-api:$log4jVersion"
-    //compile "org.apache.logging.log4j:log4j-core:$log4jVersion"
 }
 
 group = "$modGroup"

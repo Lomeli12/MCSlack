@@ -18,7 +18,7 @@ object SlackPostHelper {
     fun sendSlackMessage(name: String, icon: String, message: String) {
         val httpClient = HttpClientBuilder.create().build()
         try {
-            val request = HttpPost(MCSlack.modConfig.incomingHook)
+            val request = HttpPost(MCSlack.modConfig!!.incomingHook)
             val msg = SlackMessage(name, message, icon)
             val json = URLEncoder.encode(gson.toJson(msg), "UTF-8")
             val param = StringEntity("payload=${json}")
