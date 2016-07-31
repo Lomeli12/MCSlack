@@ -1,0 +1,15 @@
+# Messages
+mcslack.server.starting=%s is starting with the server...
+mcslack.server.stopping=%s is stopping with the server...
+mcslack.player.join=%s joined the server.
+mcslack.player.left=%s left the server.
+mcslack.player.died=%s died!
+mcslack.player.achievement=%1$s earned achievement [%2$s]!
+
+# Configs
+mcslack.config.incoming=Incoming WebHook for your slack team.
+mcslack.config.outgoing=Token used to get outgoing messages.
+mcslack.config.port=Port MCSlack will listen on for messages.
+mcslack.config.name=Name bot will use on Slack's end.
+mcslack.config.icon=Name bot will use on Slack's end.
+mcslack.config.key=Key used to get user info for @mentions.

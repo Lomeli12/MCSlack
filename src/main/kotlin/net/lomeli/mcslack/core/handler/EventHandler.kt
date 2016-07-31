@@ -1,7 +1,9 @@
 package net.lomeli.mcslack.core.handler
 
+import net.lomeli.mcslack.core.helper.LangHelper
 import net.lomeli.mcslack.core.helper.SlackPostHelper
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraftforge.event.ServerChatEvent
 import net.minecraftforge.event.entity.living.LivingDeathEvent
 import net.minecraftforge.event.entity.player.AchievementEvent
@@ -13,22 +15,27 @@ class EventHandler {
         SlackPostHelper.sendSlackMessage(event.player, event.message)
     }
 
-    @SubscribeEvent fun playerJoined(event : PlayerEvent.PlayerLoggedInEvent) {
-        SlackPostHelper.sendBotMessage("${event.player.displayNameString} joined the server.")
+    @SubscribeEvent fun playerJoined(event: PlayerEvent.PlayerLoggedInEvent) {
+        SlackPostHelper.sendBotMessage(LangHelper.translate("mcslack.player.join", event.player.displayNameString))
     }
 
     @SubscribeEvent fun playerLeft(event: PlayerEvent.PlayerLoggedOutEvent) {
-        SlackPostHelper.sendBotMessage("${event.player.displayNameString} left the server.")
+        SlackPostHelper.sendBotMessage(LangHelper.translate("mcslack.player.left", event.player.displayNameString))
     }
 
     @SubscribeEvent fun playerDied(event: LivingDeathEvent) {
         if (event.entityLiving is EntityPlayer) {
             val player = event.entityLiving as EntityPlayer
-            SlackPostHelper.sendBotMessage("${player.displayNameString} died!")
+            SlackPostHelper.sendBotMessage(LangHelper.translate("mcslack.player.died", player.displayNameString))
         }
     }
 
     @SubscribeEvent fun achievementEarned(event: AchievementEvent) {
-        SlackPostHelper.sendBotMessage("${event.entityPlayer.displayNameString} earned achievement [${event.achievement.statName.unformattedText}]")
+        val achievement = event.achievement;
+        if (event.entityPlayer is EntityPlayerMP) {
+            val player = event.entityPlayer as EntityPlayerMP
+            if (!player.statFile.hasAchievementUnlocked(achievement) && player.statFile.canUnlockAchievement(achievement))
+                SlackPostHelper.sendBotMessage(LangHelper.translate("mcslack.player.achievement", player.displayNameString, event.achievement.statName.unformattedText))
+        }
     }
 }

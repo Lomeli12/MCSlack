@@ -15,6 +15,7 @@ import net.lomeli.mcslack.core.Logger
 import net.lomeli.mcslack.core.handler.EventHandler
 import net.lomeli.mcslack.core.helper.SlackPostHelper
 import net.lomeli.mcslack.core.handler.SlackReceiveHandler
+import net.lomeli.mcslack.core.helper.LangHelper
 
 @Mod(modid = MCSlack.MOD_ID, name = MCSlack.NAME, version = MCSlack.VERSION, modLanguageAdapter = MCSlack.KOTLIN_ADAPTER, acceptableRemoteVersions = "*")
 object MCSlack {
@@ -42,7 +43,7 @@ object MCSlack {
             server = Server(modConfig!!.port)
             server!!.handler = SlackReceiveHandler()
             server!!.start()
-            SlackPostHelper.sendBotMessage("MCSlack Starting")
+            SlackPostHelper.sendBotMessage(LangHelper.translate("mcslack.server.starting", modConfig!!.botName))
             logger.logInfo("Now listening on port ${modConfig?.port}")
         } catch (e: Exception) {
             logger.logError("Could not open slack server on port ${modConfig?.port}!")
@@ -53,7 +54,7 @@ object MCSlack {
     @Mod.EventHandler fun serverStopped(event: FMLServerStoppedEvent) {
         try {
             server!!.stop()
-            SlackPostHelper.sendBotMessage("MCSlack Stopping")
+            SlackPostHelper.sendBotMessage(LangHelper.translate("mcslack.server.stopping", modConfig!!.botName))
             logger.logInfo("Stopped listening on port ${modConfig?.port}")
         } catch (e: Exception) {
             logger.logError("Could not stop server!")

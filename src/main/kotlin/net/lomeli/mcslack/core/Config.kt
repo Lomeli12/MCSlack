@@ -1,6 +1,7 @@
 package net.lomeli.mcslack.core
 
 import net.lomeli.mcslack.MCSlack
+import net.lomeli.mcslack.core.helper.LangHelper
 import net.minecraftforge.common.config.Configuration
 import net.minecraftforge.fml.client.event.ConfigChangedEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -13,14 +14,16 @@ class Config(val config: Configuration) {
     var port : Int = 80
     var botName : String = "MCSlack"
     var botIcon : String = "https://files.lomeli12.net/minecraft/mcslack/mcslack.png"
+    var apiKey : String = ""
 
     fun loadConfig() {
         val category = "general";
-        incomingHook = config.getString("incomingWebHook", category, "", "Incoming WebHook for your slack team.")
-        outgoingToken = config.getString("outgoingHookToken", category, "", "Token used to get outgoing messages.")
-        port = config.getInt("port", category, 80, 0, 65535, "Port MCSlack will listen on for messages.")
-        botName = config.getString("botName", category, "MCSlack", "Name bot will use on Slack's end.")
-        botIcon = config.getString("botIcon", category, "https://files.lomeli12.net/minecraft/mcslack/mcslack.png", "URL to icon bot will use on Slack's end.")
+        incomingHook = config.getString("incomingWebHook", category, "", LangHelper.translate("mcslack.config.incoming"))
+        outgoingToken = config.getString("outgoingHookToken", category, "", LangHelper.translate("mcslack.config.outgoing"))
+        port = config.getInt("port", category, 80, 0, 65535, LangHelper.translate("mcslack.config.port"))
+        botName = config.getString("botName", category, "MCSlack", LangHelper.translate("mcslack.config.name"))
+        botIcon = config.getString("botIcon", category, "https://files.lomeli12.net/minecraft/mcslack/mcslack.png", LangHelper.translate("mcslack.config.icon"))
+        apiKey = config.getString("apiKey", category, "", LangHelper.translate("mcslack.config.key"))
 
         if (config.hasChanged())
             config.save()
