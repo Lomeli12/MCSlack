@@ -21,7 +21,7 @@ import java.util.*
 object SlackPostHelper {
     private var gson: Gson = Gson()
 
-    fun sendSlackMessage(name: String, icon: String, message: String) {
+    fun sendPlayerMessage(name: String, icon: String, message: String) {
         if (!MCSlack.running) return
         val httpClient = HttpClientBuilder.create().build()
         try {
@@ -40,12 +40,16 @@ object SlackPostHelper {
         }
     }
 
-    fun sendSlackMessage(player: EntityPlayer, message: String) {
-        sendSlackMessage(player.displayNameString, "https://mcapi.ca/avatar/2d/${player.displayNameString}/100/false", message)
+    fun sendPlayerMessage(player: String, message: String) {
+        sendPlayerMessage(player, "https://mcapi.ca/avatar/2d/$player/100/false", message)
+    }
+
+    fun sendPlayerMessage(player: EntityPlayer, message: String) {
+        sendPlayerMessage(player.displayNameString, message)
     }
 
     fun sendBotMessage(message: String) {
-        sendSlackMessage(MCSlack.modConfig!!.botName, MCSlack.modConfig!!.botIcon, message)
+        sendPlayerMessage(MCSlack.modConfig!!.botName, MCSlack.modConfig!!.botIcon, message)
     }
 
     fun canSendAPIRequests(): Boolean {

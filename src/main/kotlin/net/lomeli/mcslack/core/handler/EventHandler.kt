@@ -2,8 +2,11 @@ package net.lomeli.mcslack.core.handler
 
 import net.lomeli.mcslack.core.helper.LangHelper
 import net.lomeli.mcslack.core.helper.SlackPostHelper
+import net.minecraft.command.CommandBase
+import net.minecraft.command.server.CommandEmote
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.entity.player.EntityPlayerMP
+import net.minecraftforge.event.CommandEvent
 import net.minecraftforge.event.ServerChatEvent
 import net.minecraftforge.event.entity.living.LivingDeathEvent
 import net.minecraftforge.event.entity.player.AchievementEvent
@@ -12,7 +15,7 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent
 
 class EventHandler {
     @SubscribeEvent fun serverChat(event: ServerChatEvent) {
-        SlackPostHelper.sendSlackMessage(event.player, event.message)
+        SlackPostHelper.sendPlayerMessage(event.player, event.message)
     }
 
     @SubscribeEvent fun playerJoined(event: PlayerEvent.PlayerLoggedInEvent) {
@@ -36,6 +39,15 @@ class EventHandler {
             val player = event.entityPlayer as EntityPlayerMP
             if (!player.statFile.hasAchievementUnlocked(achievement) && player.statFile.canUnlockAchievement(achievement))
                 SlackPostHelper.sendBotMessage(LangHelper.translate("mcslack.player.achievement", player.displayNameString, event.achievement.statName.unformattedText))
+        }
+    }
+
+    @SubscribeEvent fun commandEvent(event: CommandEvent) {
+        if (event.command is CommandEmote) {
+            if (event.parameters != null || event.parameters.size > 0) {
+                val msg = LangHelper.translate("chat.type.emote", event.sender.displayName.unformattedText)
+                SlackPostHelper.sendPlayerMessage(event.sender.displayName.unformattedText, "_${msg}_");
+            }
         }
     }
 }
