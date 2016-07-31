@@ -4,6 +4,8 @@ import com.google.common.base.Strings
 import com.google.gson.Gson
 import net.lomeli.mcslack.MCSlack
 import net.lomeli.mcslack.core.lib.SlackAuthTest
+import net.lomeli.mcslack.core.lib.SlackChannelInfoResponse
+import net.lomeli.mcslack.core.lib.SlackUserInfoResponse
 import net.lomeli.mcslack.core.lib.SlackMessage
 import net.minecraft.entity.player.EntityPlayer
 import org.apache.http.*
@@ -57,16 +59,65 @@ object SlackPostHelper {
             } catch (ex: Exception) {
                 return false;
             } finally {
-                httpClient.close()
+                var result = false
                 if (response != null) {
                     val test = gson.fromJson(InputStreamReader(response.entity.content), SlackAuthTest::class.java)
                     if (test != null)
-                        return test.ok;
+                        result = test.ok
                 }
-                return false
+                httpClient.close()
+                return result
             }
         }
         return false
+    }
+
+    fun getUserName(id: String):String {
+        if (MCSlack.running && !Strings.isNullOrEmpty(MCSlack.modConfig?.apiKey)) {
+            var url = "https://slack.com/api/users.info?token=${MCSlack.modConfig?.apiKey}&user=$id"
+            val httpClient = HttpClientBuilder.create().build()
+            var response: CloseableHttpResponse = DummyResponse()
+            try {
+                val request = HttpPost(url)
+                response = httpClient.execute(request);
+            } catch (ex: Exception) {
+                return id;
+            } finally {
+                var name = id
+                if (response != null) {
+                    val test = gson.fromJson(InputStreamReader(response.entity.content), SlackUserInfoResponse::class.java)
+                    if (test != null && test.user != null)
+                        name = test.user.name
+                }
+                httpClient.close()
+                return name
+            }
+        }
+        return id;
+    }
+
+    fun getChannelName(id: String):String {
+        if (MCSlack.running && !Strings.isNullOrEmpty(MCSlack.modConfig?.apiKey)) {
+            var url = "https://slack.com/api/channels.info?token=${MCSlack.modConfig?.apiKey}&channel=$id"
+            val httpClient = HttpClientBuilder.create().build()
+            var response: CloseableHttpResponse = DummyResponse()
+            try {
+                val request = HttpPost(url)
+                response = httpClient.execute(request);
+            } catch (ex: Exception) {
+                return id;
+            } finally {
+                var name = id
+                if (response != null) {
+                    val test = gson.fromJson(InputStreamReader(response.entity.content), SlackChannelInfoResponse::class.java)
+                    if (test != null && test.channel != null)
+                        name = test.channel.name
+                }
+                httpClient.close()
+                return name
+            }
+        }
+        return id;
     }
 
     private class DummyResponse : CloseableHttpResponse {
