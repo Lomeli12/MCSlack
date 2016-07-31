@@ -42,7 +42,7 @@ object MCSlack {
             server = Server(modConfig!!.port)
             server!!.handler = SlackReceiveHandler()
             server!!.start()
-            SlackPostHelper.sendBotMessage("MCSlack Starting")
+            SlackPostHelper.sendBotMessage("Server starting!")
             logger.logInfo("Now listening on port ${modConfig?.port}")
         } catch (e: Exception) {
             logger.logError("Could not open slack server on port ${modConfig?.port}!")
@@ -53,7 +53,7 @@ object MCSlack {
     @Mod.EventHandler fun serverStopped(event: FMLServerStoppedEvent) {
         try {
             server!!.stop()
-            SlackPostHelper.sendBotMessage("MCSlack Stopping")
+            SlackPostHelper.sendBotMessage("Server stopping...")
             logger.logInfo("Stopped listening on port ${modConfig?.port}")
         } catch (e: Exception) {
             logger.logError("Could not stop server!")
