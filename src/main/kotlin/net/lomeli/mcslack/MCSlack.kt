@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.event.FMLServerStoppedEvent
 
 import net.lomeli.mcslack.core.Config
 import net.lomeli.mcslack.core.Logger
+import net.lomeli.mcslack.core.command.CommandMCSlack
 import net.lomeli.mcslack.core.handler.EventHandler
 import net.lomeli.mcslack.core.helper.SlackPostHelper
 import net.lomeli.mcslack.core.handler.SlackReceiveHandler
@@ -23,9 +24,10 @@ object MCSlack {
     const val MOD_ID = "mcslack"
     const val VERSION = "@VERSION@"
     const val KOTLIN_ADAPTER = "net.lomeli.mcslack.KotlinAdapter"
-    private var server: Server? = null
+    var server: Server? = null
     var modConfig: Config? = null;
     var logger: Logger = Logger();
+    var running: Boolean = false;
 
     @Mod.EventHandler fun preInit(event: FMLPreInitializationEvent) {
         logger.logInfo("Loading configs")
@@ -38,11 +40,13 @@ object MCSlack {
         MinecraftForge.EVENT_BUS.register(EventHandler())
     }
 
-    @Mod.EventHandler fun serverStarted(event: FMLServerStartingEvent) {
+    @Mod.EventHandler fun serverStarting(event: FMLServerStartingEvent) {
+        event.registerServerCommand(CommandMCSlack())
         try {
             server = Server(modConfig!!.port)
             server!!.handler = SlackReceiveHandler()
             server!!.start()
+            running = true
             SlackPostHelper.sendBotMessage(LangHelper.translate("mcslack.server.starting", modConfig!!.botName))
             logger.logInfo("Now listening on port ${modConfig?.port}")
         } catch (e: Exception) {
@@ -51,10 +55,11 @@ object MCSlack {
         }
     }
 
-    @Mod.EventHandler fun serverStopped(event: FMLServerStoppedEvent) {
+    @Mod.EventHandler fun serverStopping(event: FMLServerStoppedEvent) {
         try {
             server!!.stop()
             SlackPostHelper.sendBotMessage(LangHelper.translate("mcslack.server.stopping", modConfig!!.botName))
+            running = false
             logger.logInfo("Stopped listening on port ${modConfig?.port}")
         } catch (e: Exception) {
             logger.logError("Could not stop server!")

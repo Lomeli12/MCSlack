@@ -20,6 +20,7 @@ object SlackPostHelper {
     private var gson: Gson = Gson()
 
     fun sendSlackMessage(name: String, icon: String, message: String) {
+        if (!MCSlack.running) return
         val httpClient = HttpClientBuilder.create().build()
         try {
             val request = HttpPost(MCSlack.modConfig!!.incomingHook)
@@ -46,7 +47,7 @@ object SlackPostHelper {
     }
 
     fun canSendAPIRequests(): Boolean {
-        if (!Strings.isNullOrEmpty(MCSlack.modConfig?.apiKey)) {
+        if (MCSlack.running && !Strings.isNullOrEmpty(MCSlack.modConfig?.apiKey)) {
             var url = "https://slack.com/api/auth.test?token=${MCSlack.modConfig?.apiKey}"
             val httpClient = HttpClientBuilder.create().build()
             var response: CloseableHttpResponse = DummyResponse()

@@ -1,9 +1,9 @@
 # Messages
-mcslack.server.starting=%s is starting with the server...
-mcslack.server.stopping=%s is stopping with the server...
-mcslack.player.join=%s joined the server.
-mcslack.player.left=%s left the server.
-mcslack.player.died=%s died!
+mcslack.server.starting=%1$s is starting with the server...
+mcslack.server.stopping=%1$s is stopping with the server...
+mcslack.player.join=%1$s joined the server.
+mcslack.player.left=%1$s left the server.
+mcslack.player.died=%1$s died!
 mcslack.player.achievement=%1$s earned achievement [%2$s]!
 
 # Configs
@@ -13,3 +13,10 @@ mcslack.config.port=Port MCSlack will listen on for messages.
 mcslack.config.name=Name bot will use on Slack's end.
 mcslack.config.icon=Name bot will use on Slack's end.
 mcslack.config.key=Key used to get user info for @mentions.
+
+# Commands
+mcslack.command.usage=/MCSlack <option>
+mcslack.command.stop=%1$s has been stopped manually by %2$s.
+mcslack.command.stop.stopped=%1$s isn't running.
+mcslack.command.start=%1$s has been activated manually by %2$s.
+mcslack.command.start.running=%1$s is already running.
