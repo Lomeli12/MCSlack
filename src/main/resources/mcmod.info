@@ -1,0 +1,11 @@
+[
+{
+  "modid": "mcslack",
+  "name": "MCSlack",
+  "description": "Minecraft/Slack Integartion",
+  "version" : "${version}",
+  "mcversion": "${mcversion}",
+  "url": "http://www.lomeli12.net/",
+  "authorList": ["Lomeli12"]
+}
+]

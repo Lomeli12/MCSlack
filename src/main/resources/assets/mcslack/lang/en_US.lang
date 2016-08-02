@@ -11,8 +11,9 @@ mcslack.config.incoming=Incoming WebHook for your slack team.
 mcslack.config.outgoing=Token used to get outgoing messages.
 mcslack.config.port=Port MCSlack will listen on for messages.
 mcslack.config.name=Name bot will use on Slack's end.
-mcslack.config.icon=Name bot will use on Slack's end.
+mcslack.config.icon=Icon bot will use on Slack's end.
 mcslack.config.key=Key used to get user info for @mentions.
+mcslack.config.startup=Open communications with Slack on startup.
 
 # Commands
 mcslack.command.usage=/MCSlack <option>

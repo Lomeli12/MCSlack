@@ -2,6 +2,7 @@ package net.lomeli.mcslack.core.command
 
 import net.lomeli.mcslack.MCSlack
 import net.lomeli.mcslack.core.helper.LangHelper
+import net.lomeli.mcslack.core.helper.ServerHelper
 import net.lomeli.mcslack.core.helper.SlackPostHelper
 import net.minecraft.command.CommandBase
 import net.minecraft.command.ICommandSender
@@ -19,10 +20,9 @@ class CommandStop : CommandBase {
                 val msg = LangHelper.translate("mcslack.command.stop", MCSlack.modConfig!!.botName, sender!!.displayName.unformattedComponentText)
                 sender?.addChatMessage(TextComponentString(msg))
                 SlackPostHelper.sendBotMessage(msg)
-                MCSlack.server!!.stop()
-                MCSlack.running = false
+                ServerHelper.shutdownServer()
             } catch(ex: Exception) {
-                MCSlack.logger.logError("Error when ${sender!!.displayName.unformattedText} ran ${commandName} command.")
+                MCSlack.logger.logError("Error when ${sender!!.displayName.unformattedText} ran $commandName command.")
                 ex.printStackTrace()
             }
         } else

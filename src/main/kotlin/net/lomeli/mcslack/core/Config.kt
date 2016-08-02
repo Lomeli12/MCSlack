@@ -15,15 +15,17 @@ class Config(val config: Configuration) {
     var botName : String = "MCSlack"
     var botIcon : String = "https://files.lomeli12.net/minecraft/mcslack/mcslack.png"
     var apiKey : String = ""
+    var onStartup : Boolean = true;
 
     fun loadConfig() {
-        val category = "general";
+        val category = Configuration.CATEGORY_GENERAL;
         incomingHook = config.getString("incomingWebHook", category, "", LangHelper.translate("mcslack.config.incoming"))
         outgoingToken = config.getString("outgoingHookToken", category, "", LangHelper.translate("mcslack.config.outgoing"))
         port = config.getInt("port", category, 80, 0, 65535, LangHelper.translate("mcslack.config.port"))
         botName = config.getString("botName", category, "MCSlack", LangHelper.translate("mcslack.config.name"))
         botIcon = config.getString("botIcon", category, "https://files.lomeli12.net/minecraft/mcslack/mcslack.png", LangHelper.translate("mcslack.config.icon"))
         apiKey = config.getString("apiKey", category, "", LangHelper.translate("mcslack.config.key"))
+        onStartup = config.getBoolean("startup", category, true, LangHelper.translate("mcslack.config.startup"))
 
         if (config.hasChanged())
             config.save()

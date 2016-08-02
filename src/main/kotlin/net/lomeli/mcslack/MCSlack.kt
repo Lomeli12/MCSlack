@@ -15,15 +15,18 @@ import net.lomeli.mcslack.core.Logger
 import net.lomeli.mcslack.core.command.CommandMCSlack
 import net.lomeli.mcslack.core.handler.EventHandler
 import net.lomeli.mcslack.core.helper.SlackPostHelper
-import net.lomeli.mcslack.core.handler.SlackReceiveHandler
 import net.lomeli.mcslack.core.helper.LangHelper
+import net.lomeli.mcslack.core.helper.ServerHelper
+import net.minecraftforge.fml.common.FMLCommonHandler
 
-@Mod(modid = MCSlack.MOD_ID, name = MCSlack.NAME, version = MCSlack.VERSION, modLanguageAdapter = MCSlack.KOTLIN_ADAPTER, acceptableRemoteVersions = "*")
+@Mod(modid = MCSlack.MOD_ID, name = MCSlack.NAME, version = MCSlack.VERSION, modLanguageAdapter = MCSlack.KOTLIN_ADAPTER,
+        acceptableRemoteVersions = "*", guiFactory = MCSlack.FACTORY)
 object MCSlack {
     const val NAME = "MCSlack"
     const val MOD_ID = "mcslack"
     const val VERSION = "@VERSION@"
     const val KOTLIN_ADAPTER = "net.lomeli.mcslack.KotlinAdapter"
+    const val FACTORY = "net.lomeli.mcslack.client.ConfigFactory"
     var server: Server? = null
     var modConfig: Config? = null;
     var logger: Logger = Logger();
@@ -38,32 +41,33 @@ object MCSlack {
     @Mod.EventHandler fun init(event: FMLInitializationEvent) {
         logger.logInfo("Registering events")
         MinecraftForge.EVENT_BUS.register(EventHandler())
+        if (FMLCommonHandler.instance().side.isClient) MinecraftForge.EVENT_BUS.register(modConfig)
     }
 
     @Mod.EventHandler fun serverStarting(event: FMLServerStartingEvent) {
         event.registerServerCommand(CommandMCSlack())
-        try {
-            server = Server(modConfig!!.port)
-            server!!.handler = SlackReceiveHandler()
-            server!!.start()
-            running = true
-            SlackPostHelper.sendBotMessage(LangHelper.translate("mcslack.server.starting", modConfig!!.botName))
-            logger.logInfo("Now listening on port ${modConfig?.port}")
-        } catch (e: Exception) {
-            logger.logError("Could not open slack server on port ${modConfig?.port}!")
-            e.printStackTrace()
+        if (modConfig!!.onStartup) {
+            try {
+                ServerHelper.startupServer()
+                SlackPostHelper.sendBotMessage(LangHelper.translate("mcslack.server.starting", modConfig!!.botName))
+                logger.logInfo("Now listening on port ${modConfig?.port}")
+            } catch (e: Exception) {
+                logger.logError("Could not open slack server on port ${modConfig?.port}!")
+                e.printStackTrace()
+            }
         }
     }
 
     @Mod.EventHandler fun serverStopping(event: FMLServerStoppedEvent) {
-        try {
-            server!!.stop()
-            SlackPostHelper.sendBotMessage(LangHelper.translate("mcslack.server.stopping", modConfig!!.botName))
-            running = false
-            logger.logInfo("Stopped listening on port ${modConfig?.port}")
-        } catch (e: Exception) {
-            logger.logError("Could not stop server!")
-            e.printStackTrace()
+        if (running) {
+            try {
+                SlackPostHelper.sendBotMessage(LangHelper.translate("mcslack.server.stopping", modConfig!!.botName))
+                ServerHelper.shutdownServer()
+                logger.logInfo("Stopped listening on port ${modConfig?.port}")
+            } catch (e: Exception) {
+                logger.logError("Could not stop server!")
+                e.printStackTrace()
+            }
         }
     }
 }
