@@ -109,9 +109,8 @@ reobf {
     shadowJar { mappingType }
 }
 
-tasks.build.dependsOn reobfShadowJar
-
 artifacts {
     archives shadowJar
 }
 
+tasks.build.dependsOn reobfShadowJar
