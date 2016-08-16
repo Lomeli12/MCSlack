@@ -6,6 +6,7 @@ import net.minecraft.command.CommandBase
 import net.minecraft.command.server.CommandEmote
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.entity.player.EntityPlayerMP
+import net.minecraft.util.text.TextComponentTranslation
 import net.minecraftforge.event.CommandEvent
 import net.minecraftforge.event.ServerChatEvent
 import net.minecraftforge.event.entity.living.LivingDeathEvent
@@ -45,8 +46,9 @@ class EventHandler {
     @SubscribeEvent fun commandEvent(event: CommandEvent) {
         if (event.command is CommandEmote) {
             if (event.parameters != null || event.parameters.size > 0) {
-                val msg = LangHelper.translate("chat.type.emote", event.sender.displayName.unformattedText)
-                SlackPostHelper.sendPlayerMessage(event.sender.displayName.unformattedText, "_${msg}_");
+                val textComponent = CommandBase.getChatComponentFromNthArg(event.sender, event.parameters, 0, true)
+                val msg = TextComponentTranslation("chat.type.emote", *arrayOf<Any>(event.sender.displayName, textComponent)).unformattedText
+                SlackPostHelper.sendPlayerMessage(event.sender.displayName.unformattedText, "_${msg}_")
             }
         }
     }

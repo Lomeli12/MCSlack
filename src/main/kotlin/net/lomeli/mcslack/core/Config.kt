@@ -19,7 +19,6 @@ class Config(val config: Configuration) {
     var listCommandToken : String = ""
     var listCommandChannel : String = ""
     var listCommandName : String = "list"
-    var commandWhiteList: Array<String> = arrayOf("me", "say")
 
     fun loadConfig() {
         val category = Configuration.CATEGORY_GENERAL;
@@ -33,7 +32,6 @@ class Config(val config: Configuration) {
         listCommandToken = config.getString("listCommandToken", category, "", LangHelper.translate("mcslack.config.list"))
         listCommandChannel = config.getString("listCommandChannel", category, "", LangHelper.translate("mcslack.config.list.channel"))
         listCommandName = config.getString("listCommandName", category, "list", LangHelper.translate("mcslack.config.list.name"))
-        //commandWhiteList = config.getStringList("commandWhiteList", category, arrayOf("me", "say"), LangHelper.translate("mcslack.config.commands"))
 
         if (config.hasChanged())
             config.save()
