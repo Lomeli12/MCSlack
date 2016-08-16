@@ -1,8 +1,10 @@
 package net.lomeli.mcslack.core.handler
 
+import com.google.common.base.Strings
 import net.lomeli.mcslack.core.helper.LangHelper
 import net.lomeli.mcslack.core.helper.SlackPostHelper
 import net.minecraft.command.CommandBase
+import net.minecraft.command.server.CommandBroadcast
 import net.minecraft.command.server.CommandEmote
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.entity.player.EntityPlayerMP
@@ -44,11 +46,17 @@ class EventHandler {
     }
 
     @SubscribeEvent fun commandEvent(event: CommandEvent) {
-        if (event.command is CommandEmote) {
+        if (event.command is CommandEmote || event.command is CommandBroadcast) {
             if (event.parameters != null || event.parameters.size > 0) {
                 val textComponent = CommandBase.getChatComponentFromNthArg(event.sender, event.parameters, 0, true)
-                val msg = TextComponentTranslation("chat.type.emote", *arrayOf<Any>(event.sender.displayName, textComponent)).unformattedText
-                SlackPostHelper.sendPlayerMessage(event.sender.displayName.unformattedText, "_${msg}_")
+                var key = ""
+                if (event.command is CommandEmote) key = "chat.type.emote"
+                else if (event.command is CommandBroadcast) key = "chat.type.announcement"
+                if (!Strings.isNullOrEmpty(key)) {
+                    var msg = TextComponentTranslation(key, *arrayOf<Any>(event.sender.displayName, textComponent)).unformattedText
+                    if (event.command is CommandEmote) msg = "_${msg}_"
+                    SlackPostHelper.sendPlayerMessage(event.sender.displayName.unformattedText, msg)
+                }
             }
         }
     }
