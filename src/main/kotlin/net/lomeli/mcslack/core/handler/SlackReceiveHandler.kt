@@ -2,6 +2,7 @@ package net.lomeli.mcslack.core.handler
 
 import com.google.common.base.Strings
 import net.lomeli.mcslack.MCSlack
+import net.lomeli.mcslack.core.helper.LangHelper
 import net.lomeli.mcslack.core.helper.SlackPostHelper
 import net.minecraft.util.text.TextComponentString
 import net.minecraft.util.text.event.ClickEvent
@@ -30,7 +31,7 @@ class SlackReceiveHandler : AbstractHandler {
         if (request1?.method.equals("POST")) {
             val token = request1?.getParameter("token")
             if (!Strings.isNullOrEmpty(MCSlack.modConfig!!.outgoingToken) && MCSlack.modConfig!!.outgoingToken.equals(token)) {
-                var text = request1?.getParameter("text");
+                var text = request1?.getParameter("text")
                 if (Strings.isNullOrEmpty(text))
                     return
                 var user = request1?.getParameter("user_name")
@@ -54,6 +55,42 @@ class SlackReceiveHandler : AbstractHandler {
                 else if (FMLCommonHandler.instance().minecraftServerInstance != null)
                     FMLCommonHandler.instance().minecraftServerInstance.playerList.sendChatMsgImpl(msg, false)
                 response?.status = Response.SC_OK
+            } else if (!Strings.isNullOrEmpty(MCSlack.modConfig!!.listCommandToken) && MCSlack.modConfig!!.listCommandToken.equals(token)) {
+                MCSlack.logger.logInfo("Getting list token")
+                val channel = request1?.getParameter("channel_name")
+                val command = request1?.getParameter("command")
+                if (!Strings.isNullOrEmpty(MCSlack.modConfig!!.listCommandChannel) && !MCSlack.modConfig!!.listCommandChannel.equals(channel, true)) {
+                    response?.status = Response.SC_UNAUTHORIZED
+                    return
+                }
+                if (!"/${MCSlack.modConfig!!.listCommandName}".equals(command, true)) {
+                    response?.status = Response.SC_NOT_ACCEPTABLE
+                    return
+                }
+                var players = ""
+                if (FMLCommonHandler.instance().side.isClient)
+                    players += FMLClientHandler.instance().clientPlayerEntity.displayNameString
+                else if (FMLCommonHandler.instance().minecraftServerInstance != null) {
+                    val list = FMLCommonHandler.instance().minecraftServerInstance.playerList.playerList
+                    if (list != null && !list.isEmpty()) {
+                        for (player in list) {
+                            if (player != null) {
+                                if (!Strings.isNullOrEmpty(players)) players += ", ${player.displayNameString}"
+                                else players += "${player.displayNameString}"
+                            }
+                        }
+                    }
+                }
+                var message : String
+                if (Strings.isNullOrEmpty(players)) message = LangHelper.translate("mcslack.server.command.list.none")
+                else message = LangHelper.translate("mcslack.server.command.list", players)
+                response?.status = Response.SC_OK
+                response?.setHeader("Content-Type", "text/plain")
+                response?.setHeader("success", "yes")
+                val writer = response?.writer!!
+                writer.write(message)
+                writer.close()
+                //SlackPostHelper.sendBotMessage(message)
             }
         }
     }

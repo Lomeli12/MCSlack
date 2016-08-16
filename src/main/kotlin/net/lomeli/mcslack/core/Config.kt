@@ -15,7 +15,11 @@ class Config(val config: Configuration) {
     var botName : String = "MCSlack"
     var botIcon : String = "https://files.lomeli12.net/minecraft/mcslack/mcslack.png"
     var apiKey : String = ""
-    var onStartup : Boolean = true;
+    var onStartup : Boolean = true
+    var listCommandToken : String = ""
+    var listCommandChannel : String = ""
+    var listCommandName : String = "list"
+    var commandWhiteList: Array<String> = arrayOf("me", "say")
 
     fun loadConfig() {
         val category = Configuration.CATEGORY_GENERAL;
@@ -26,6 +30,10 @@ class Config(val config: Configuration) {
         botIcon = config.getString("botIcon", category, "https://files.lomeli12.net/minecraft/mcslack/mcslack.png", LangHelper.translate("mcslack.config.icon"))
         apiKey = config.getString("apiKey", category, "", LangHelper.translate("mcslack.config.key"))
         onStartup = config.getBoolean("startup", category, true, LangHelper.translate("mcslack.config.startup"))
+        listCommandToken = config.getString("listCommandToken", category, "", LangHelper.translate("mcslack.config.list"))
+        listCommandChannel = config.getString("listCommandChannel", category, "", LangHelper.translate("mcslack.config.list.channel"))
+        listCommandName = config.getString("listCommandName", category, "list", LangHelper.translate("mcslack.config.list.name"))
+        //commandWhiteList = config.getStringList("commandWhiteList", category, arrayOf("me", "say"), LangHelper.translate("mcslack.config.commands"))
 
         if (config.hasChanged())
             config.save()

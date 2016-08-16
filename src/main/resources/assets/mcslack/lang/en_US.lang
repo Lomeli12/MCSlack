@@ -1,6 +1,8 @@
 # Messages
 mcslack.server.starting=%1$s is starting with the server...
 mcslack.server.stopping=%1$s is stopping with the server...
+mcslack.server.command.list=The following players are online right now: %1$s
+mcslack.server.command.list.none=There are no players online right now.
 mcslack.player.join=%1$s joined the server.
 mcslack.player.left=%1$s left the server.
 mcslack.player.died=%1$s died!
@@ -12,8 +14,12 @@ mcslack.config.outgoing=Token used to get outgoing messages.
 mcslack.config.port=Port MCSlack will listen on for messages.
 mcslack.config.name=Name bot will use on Slack's end.
 mcslack.config.icon=Icon bot will use on Slack's end.
-mcslack.config.key=Key used to get user info for @mentions.
+mcslack.config.key=Token used to get user info for @mentions.
 mcslack.config.startup=Open communications with Slack on startup.
+mcslack.config.list=Command token used to make
+mcslack.config.list.channel=What channel the list command can be used on.
+mcslack.config.list.name=Name of the list command, in case /list is already taken
+mcslack.config.commands=Whitelist of commands that MCSlack will copy and send the output of.
 
 # Commands
 mcslack.command.usage=/MCSlack <option>
